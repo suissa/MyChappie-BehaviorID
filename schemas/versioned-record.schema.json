@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mychappie.dev/schemas/behaviorid/versioned-record-v1.json",
+  "title": "BehaviorID Versioned Persistence Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "kind", "value"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "kind": {
+      "enum": ["behavior-id", "situational-behavior-pattern", "trajectory-candidate", "nba-decision", "nba-outcome"]
+    },
+    "value": { "type": "object" }
+  }
+}

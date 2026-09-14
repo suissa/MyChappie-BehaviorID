@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mychappie.dev/schemas/behaviorid/trajectory-candidate-v1.json",
+  "title": "TrajectoryCandidate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["predictedNext", "theta", "kappa", "activePatternIds", "provenance", "source"],
+  "properties": {
+    "predictedNext": {
+      "type": "object",
+      "required": ["nextState"],
+      "properties": {
+        "nextState": { "type": "string", "minLength": 1 },
+        "transitionLabel": { "type": "string" }
+      }
+    },
+    "theta": { "type": "number", "minimum": 0, "maximum": 1 },
+    "kappa": { "type": "number", "minimum": 0, "maximum": 1 },
+    "activePatternIds": { "type": "array", "items": { "type": "string" } },
+    "provenance": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+    "source": { "enum": ["person", "cohort", "global", "transition-prior"] }
+  }
+}
