@@ -98,8 +98,8 @@ export interface BehavioralSignalVector {
 
 export interface AnalyzedObservation {
   observation: InteractionObservation;
-  text?: TextSignals;
-  prosody?: ProsodySignals;
+  text: TextSignals | undefined;
+  prosody: ProsodySignals | undefined;
   vector: BehavioralSignalVector;
 }
 
