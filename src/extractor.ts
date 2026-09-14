@@ -112,12 +112,27 @@ export class HeuristicBehaviorIDExtractor implements BehaviorIDExtractor {
 
   extract(observations: readonly InteractionObservation[]): BehaviorIDExtractorResult {
     const analyzed = analyzeObservations(observations, this.#options);
-    const userTurns = analyzed.filter((item) => item.observation.sender === "user");
-    if (userTurns.length < 2) {
-      return { analyzed, stateScores: {}, uncertainty: 1, reason: "Need at least two user observations to infer a transition." };
+    if (analyzed.length < 3) {
+      return {
+        analyzed,
+        stateScores: {},
+        uncertainty: 1,
+        reason: "BehaviorID requires the minimal three-observation window."
+      };
     }
 
-    const previousObs = userTurns.at(-2)!;
+    const window = analyzed.slice(-3);
+    const userTurns = window.filter((item) => item.observation.sender === "user");
+    if (userTurns.length < 2) {
+      return {
+        analyzed,
+        stateScores: {},
+        uncertainty: 1,
+        reason: "The three-observation window must contain a previous and current user observation."
+      };
+    }
+
+    const previousObs = userTurns[0]!;
     const currentObs = userTurns.at(-1)!;
     const previousScores = scoreStates(previousObs);
     const currentScores = scoreStates(currentObs);
@@ -149,8 +164,7 @@ export class HeuristicBehaviorIDExtractor implements BehaviorIDExtractor {
       transition,
       current: toBehaviorState(current, currentObs.observation.observedAt),
       provenance: [
-        previousObs.observation.id,
-        currentObs.observation.id,
+        ...window.map((item) => item.observation.id),
         ...currentObs.vector.tags.map((tag) => `${currentObs.observation.id}:${tag}`)
       ]
     });
@@ -160,7 +174,7 @@ export class HeuristicBehaviorIDExtractor implements BehaviorIDExtractor {
       analyzed,
       stateScores,
       uncertainty,
-      reason: "BehaviorID inferred from multimodal text/prosody signals."
+      reason: "BehaviorID inferred from a three-observation multimodal text/prosody window."
     };
   }
 }
