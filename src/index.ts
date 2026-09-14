@@ -6,5 +6,6 @@ export * from "./prosody.js";
 export * from "./analysis.js";
 export * from "./extractor.js";
 export * from "./patterns.js";
+export * from "./specific-patterns.js";
 export * from "./prediction.js";
 export * from "./nba.js";
