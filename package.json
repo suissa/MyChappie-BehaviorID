@@ -1,0 +1,19 @@
+{
+  "name": "@mychappie/behaviorid",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "BehaviorID, situational prediction and governed Next Best Action core for ChappieAgent",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/test/**/*.test.js",
+    "check": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
