@@ -1,5 +1,6 @@
 export * from "./domain.js";
 export * from "./signals.js";
+export * from "./audio-features.js";
 export * from "./text-analysis.js";
 export * from "./prosody.js";
 export * from "./analysis.js";
