@@ -8,10 +8,19 @@ import {
   type ProsodyBaseline
 } from "../src/index.js";
 
-const base = (id: string, text: string, observedAt: string): InteractionObservation => ({
+const user = (id: string, text: string, observedAt: string): InteractionObservation => ({
   id,
   subjectId: "user-1",
   sender: "user",
+  observedAt,
+  text,
+  modalities: ["text"]
+});
+
+const agent = (id: string, text: string, observedAt: string): InteractionObservation => ({
+  id,
+  subjectId: "user-1",
+  sender: "agent",
   observedAt,
   text,
   modalities: ["text"]
@@ -69,22 +78,35 @@ test("prosody analyzer uses user-normalized latency, pauses and speaking rate", 
 test("extractor keeps route information instead of classifying only the final state", () => {
   const extractor = new HeuristicBehaviorIDExtractor({ minStateConfidence: 0.25 });
   const result = extractor.extract([
-    base("m1", "Tenho uma dúvida, qual a diferença entre os planos? 🤔", "2026-09-14T12:00:00Z"),
-    base("m2", "Esse outro é mais barato, mas não sei se o seu compensa 🤨", "2026-09-14T12:01:00Z")
+    user("m1", "Tenho uma dúvida, qual a diferença entre os planos? 🤔", "2026-09-14T12:00:00Z"),
+    agent("a1", "Posso comparar preço, limite e prazo para você.", "2026-09-14T12:00:20Z"),
+    user("m2", "Esse outro é mais barato, mas não sei se o seu compensa 🤨", "2026-09-14T12:01:00Z")
   ]);
 
   assert.ok(result.behaviorId);
   assert.notEqual(result.behaviorId.previous.code.length, 0);
   assert.notEqual(result.behaviorId.current.code.length, 0);
+  assert.ok(result.behaviorId.provenance.includes("a1"));
   assert.ok(result.behaviorId.provenance.some((item) => item.includes("m2")));
   assert.ok(result.behaviorId.transition.transitionCost >= 0 && result.behaviorId.transition.transitionCost <= 1);
+});
+
+test("extractor requires the minimal three-observation window", () => {
+  const extractor = new HeuristicBehaviorIDExtractor({ minStateConfidence: 0.1 });
+  const result = extractor.extract([
+    user("m1", "oi", "2026-09-14T12:00:00Z"),
+    user("m2", "ok", "2026-09-14T12:01:00Z")
+  ]);
+  assert.equal(result.behaviorId, undefined);
+  assert.match(result.reason, /three-observation/);
 });
 
 test("extractor represents uncertainty instead of fabricating a state", () => {
   const extractor = new HeuristicBehaviorIDExtractor({ minStateConfidence: 0.9 });
   const result = extractor.extract([
-    base("m1", "oi", "2026-09-14T12:00:00Z"),
-    base("m2", "ok", "2026-09-14T12:01:00Z")
+    user("m1", "oi", "2026-09-14T12:00:00Z"),
+    agent("a1", "Olá", "2026-09-14T12:00:10Z"),
+    user("m2", "ok", "2026-09-14T12:01:00Z")
   ]);
 
   assert.equal(result.behaviorId, undefined);
@@ -104,7 +126,8 @@ test("audio and emoji can specialize a textually ambiguous observation", () => {
   });
 
   const result = extractor.extract([
-    base("m1", "quero entender melhor", "2026-09-14T12:00:00Z"),
+    user("m1", "quero entender melhor", "2026-09-14T12:00:00Z"),
+    agent("a1", "Posso resolver isso agora.", "2026-09-14T12:00:05Z"),
     {
       id: "m2",
       subjectId: "user-1",
