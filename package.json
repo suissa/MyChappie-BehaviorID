@@ -6,7 +6,7 @@
   "description": "BehaviorID, situational prediction and governed Next Best Action core for ChappieAgent",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test dist/test/**/*.test.js",
+    "test": "npm run build && node --test dist/test/*.test.js",
     "check": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
