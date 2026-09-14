@@ -1,5 +1,5 @@
-import type { SituationContext, SituationalBehaviorPattern, EvidenceRef } from "./domain.js";
-import type { AnalyzedObservation, BehavioralSignalVector, SituationValue } from "./signals.js";
+import type { SituationContext, SituationValue, SituationalBehaviorPattern, EvidenceRef } from "./domain.js";
+import type { AnalyzedObservation, BehavioralSignalVector } from "./signals.js";
 import type { PatternObservation } from "./patterns.js";
 import { estimateConfidence } from "./patterns.js";
 
@@ -111,7 +111,7 @@ export function induceSpecificPattern(
   });
 
   // Prefer explicit emoji/tags, then categorical signal buckets. This preserves
-  // the user's high-value symbolic cues while bounding over-specialization.
+  // high-value symbolic cues while bounding over-specialization.
   discriminativeSignals.sort(([a], [b]) => signalPriority(a) - signalPriority(b) || a.localeCompare(b));
   const selectedSignals = discriminativeSignals.slice(0, options.maxSignalConditions ?? 8);
   const situation = Object.fromEntries([...baseConditions, ...selectedSignals]) as SituationContext;
