@@ -9,3 +9,4 @@ export * from "./patterns.js";
 export * from "./specific-patterns.js";
 export * from "./prediction.js";
 export * from "./nba.js";
+export * from "./persistence.js";

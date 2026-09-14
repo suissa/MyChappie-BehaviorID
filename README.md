@@ -51,6 +51,7 @@ message
 - low-confidence clarification fallback;
 - hard veto example preventing anxiety/FOMO exploitation;
 - deterministic Node test suite;
+- versioned, validated JSON persistence records and published JSON Schemas;
 - GitHub Actions CI.
 
 See [`docs/FORMAL_MODEL.md`](docs/FORMAL_MODEL.md) for the normative model.
@@ -58,7 +59,7 @@ See [`docs/FORMAL_MODEL.md`](docs/FORMAL_MODEL.md) for the normative model.
 ## Development
 
 ```bash
-npm install
+npm ci
 npm run check
 npm test
 ```

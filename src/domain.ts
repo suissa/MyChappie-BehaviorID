@@ -113,6 +113,17 @@ export interface NBADecision {
   reason: string;
 }
 
+export type NBAOutcomeStatus = "supported" | "contradicted" | "unresolved";
+
+export interface NBAOutcome {
+  decisionId: string;
+  subjectId: string;
+  status: NBAOutcomeStatus;
+  observedBehaviorId?: BehaviorID;
+  evidence: readonly EvidenceRef[];
+  observedAt: string;
+}
+
 export function assertUnitInterval(value: number, field: string): void {
   if (!Number.isFinite(value) || value < 0 || value > 1) {
     throw new RangeError(`${field} must be within [0, 1]`);
